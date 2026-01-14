@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video to Social Content - AI Solution Demo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #FF6B35;
+            --secondary: #F7931E;
+            --dark: #1a1a2e;
+            --darker: #0f0f1e;
+            --light: #f5f5f5;
+            --accent: #00d9ff;
+        }
+
+        body {
+            font-family: 'Source Sans 3', sans-serif;
+            background: var(--darker);
+            color: var(--light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,107,53,0.1) 0%, transparent 70%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.3; }
+            50% { transform: scale(1.1) rotate(180deg); opacity: 0.5; }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: slideUp 0.8s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 2rem;
+            animation: slideUp 0.8s ease-out 0.2s both;
+        }
+
+        .video-placeholder {
+            width: 100%;
+            max-width: 300px;
+            aspect-ratio: 9/16;
+            background: linear-gradient(135deg, rgba(255,107,53,0.2), rgba(0,217,255,0.2));
+            border-radius: 20px;
+            margin: 2rem auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            animation: slideUp 0.8s ease-out 0.4s both;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid rgba(255,107,53,0.3);
+        }
+
+        .video-placeholder::before {
+            content: '▶';
+            position: absolute;
+            font-size: 4rem;
+            opacity: 0.3;
+        }
+
+        .arrow-down {
+            font-size: 2rem;
+            animation: bounce 2s infinite;
+            margin-top: 2rem;
+            color: var(--secondary);
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(10px); }
+        }
+
+        .section {
+            padding: 4rem 1.5rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.5rem;
+            letter-spacing: 1px;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: var(--primary);
+        }
+
+        .process-step {
+            background: var(--dark);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--primary);
+            transform: translateX(-20px);
+            opacity: 0;
+            transition: all 0.6s ease-out;
+        }
+
+        .process-step.visible {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .step-number {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 3rem;
+            color: var(--secondary);
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .step-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--light);
+        }
+
+        .step-content {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(255,107,53,0.1), rgba(247,147,30,0.1));
+            border: 1px solid rgba(255,107,53,0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transform: scale(0.9);
+            opacity: 0;
+            transition: all 0.5s ease-out;
+        }
+
+        .stat-card.visible {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .stat-number {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 3rem;
+            color: var(--accent);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.7);
+            margin-top: 0.5rem;
+        }
+
+        .sample-post {
+            background: var(--dark);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255,107,53,0.2);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.6s ease-out;
+        }
+
+        .sample-post.visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .platform-badge {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .post-caption {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .post-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.6);
+            flex-wrap: wrap;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+            margin: 2rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--primary), var(--secondary));
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            padding-left: 1.5rem;
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: all 0.6s ease-out;
+        }
+
+        .timeline-item.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2.5rem;
+            top: 0.5rem;
+            width: 12px;
+            height: 12px;
+            background: var(--accent);
+            border-radius: 50%;
+            border: 3px solid var(--darker);
+        }
+
+        .timeline-date {
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 0.3rem;
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 3rem 1.5rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: white;
+            color: var(--primary);
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(0,0,0,0.4);
+        }
+
+        .highlight {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        @media (max-width: 640px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .section {
+                padding: 3rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <div class="hero-content">
+            <h1>ONE VIDEO<br>30 DAYS OF CONTENT</h1>
+            <p class="tagline">Transform any 5-minute video into a complete social media strategy</p>
+            <div class="video-placeholder">
+                📹
+            </div>
+            <div class="arrow-down">↓</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2 class="section-header">THE PROBLEM</h2>
+        <div class="process-step">
+            <div class="step-content">
+                You film great content of your work, but then it sits on your phone. Creating social posts takes hours. You don't know what to write, which hashtags work, or when to post. Meanwhile, your competitors are everywhere online.
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2 class="section-header">THE SOLUTION</h2>
+        
+        <div class="process-step">
+            <div class="step-number">01</div>
+            <div class="step-title">Upload Your Video</div>
+            <div class="step-content">
+                Send us your raw 5-minute video. Could be a restoration project, tattoo session, training workout - whatever shows your craft.
+            </div>
+        </div>
+
+        <div class="process-step">
+            <div class="step-number">02</div>
+            <div class="step-title">AI Analyzes Everything</div>
+            <div class="step-content">
+                Our system transcribes your video, identifies the best moments, and understands your industry's messaging. It knows what works for historic home remodelers vs. tattoo artists vs. fitness trainers.
+            </div>
+        </div>
+
+        <div class="process-step">
+            <div class="step-number">03</div>
+            <div class="step-title">Get Your Content Package</div>
+            <div class="step-content">
+                Receive 10-15 platform-ready posts with captions, hashtags, and a 30-day schedule. Every post is optimized for TikTok, Instagram, Facebook, or YouTube.
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2 class="section-header">WHAT YOU GET</h2>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">10-15</div>
+                <div class="stat-label">Ready Posts</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">4</div>
+                <div class="stat-label">Platforms</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">30</div>
+                <div class="stat-label">Days Covered</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">3hrs</div>
+                <div class="stat-label">Time Saved</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2 class="section-header">SAMPLE POSTS</h2>
+        
+        <div class="sample-post">
+            <div class="platform-badge">TIKTOK</div>
+            <div class="post-caption">
+                "This 1920s floor hadn't been touched in 40 years. Layers of carpet, padding, and neglect had hidden the original oak underneath. Watch what happens when you respect what the original craftsmen built instead of covering it up with vinyl. Your historic home deserves better."
+            </div>
+            <div class="post-meta">
+                <span>⏱️ 0:05-0:35</span>
+                <span>📅 Jan 20, 7:00 PM</span>
+                <span>#HistoricHome #1920sHome</span>
+            </div>
+        </div>
+
+        <div class="sample-post">
+            <div class="platform-badge">INSTAGRAM REEL</div>
+            <div class="post-caption">
+                "Hand-sanding the edges where machines can't reach. This is what separates preservation from renovation. Every Craftsman bungalow deserves this level of attention to detail."
+            </div>
+            <div class="post-meta">
+                <span>⏱️ 0:08-0:20</span>
+                <span>📅 Jan 22, 11:00 AM</span>
+                <span>#Craftsmanship #DetailWork</span>
+            </div>
+        </div>
+
+        <div class="sample-post">
+            <div class="platform-badge">YOUTUBE SHORT</div>
+            <div class="post-caption">
+                "How to choose stain colors for historic hardwood floors. We test multiple options to match the home's original era while updating for modern preferences."
+            </div>
+            <div class="post-meta">
+                <span>⏱️ 1:20-2:15</span>
+                <span>📅 Jan 24, 3:00 PM</span>
+                <span>#HistoricRestoration #Tutorial</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2 class="section-header">YOUR 30-DAY TIMELINE</h2>
+        
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-date">Week 1</div>
+                <div>Launch with transformation content - hook viewers with before/after</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-date">Week 2</div>
+                <div>Educational posts showing your process and expertise</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-date">Week 3</div>
+                <div>Behind-the-scenes content building trust and authenticity</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-date">Week 4</div>
+                <div>Testimonials and final reveals driving conversions</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2 class="section-header">THE ROI</h2>
+        <div class="process-step">
+            <div class="step-content" style="font-size: 1.1rem;">
+                <p style="margin-bottom: 1rem;">
+                    <span class="highlight">Before:</span> Film a video → It sits on your phone → Zero social presence
+                </p>
+                <p style="margin-bottom: 1rem;">
+                    <span class="highlight">After:</span> Film a video → Get 30 days of content → Consistent online presence across all platforms
+                </p>
+                <p style="margin-bottom: 1rem;">
+                    <span class="highlight">Investment:</span> ~$1,000/month
+                </p>
+                <p>
+                    <span class="highlight">Value:</span> Professional social media management costs $2,000-5,000/month. You get the same output for a fraction of the cost.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="cta-section">
+        <h2 style="font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem; margin-bottom: 1rem; letter-spacing: 1px;">
+            READY TO TRANSFORM YOUR CONTENT?
+        </h2>
+        <p style="font-size: 1.1rem; margin-bottom: 2rem; opacity: 0.9;">
+            Perfect for historic home remodelers, tattoo shops, fitness trainers, and service businesses
+        </p>
+        <a href="sms:+1234567890?&body=I'm interested in the Video to Social Content solution" class="cta-button">
+            TEXT ME TO GET STARTED
+        </a>
+        <p style="font-size: 0.9rem; margin-top: 1.5rem; opacity: 0.8;">
+            Beta pricing available now
+        </p>
+    </div>
+
+    <script>
+        // Intersection Observer for scroll animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        // Observe all animated elements
+        document.querySelectorAll('.process-step, .stat-card, .sample-post, .timeline-item').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Add stagger delay to timeline items
+        document.querySelectorAll('.timeline-item').forEach((item, index) => {
+            item.style.transitionDelay = `${index * 0.1}s`;
+        });
+
+        // Add stagger delay to stat cards
+        document.querySelectorAll('.stat-card').forEach((card, index) => {
+            card.style.transitionDelay = `${index * 0.1}s`;
+        });
+
+        // Add stagger delay to sample posts
+        document.querySelectorAll('.sample-post').forEach((post, index) => {
+            post.style.transitionDelay = `${index * 0.15}s`;
+        });
+    </script>
+</body>
+</html>
