@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ink Sanctum - Video to Social Content</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-bg: #FAFAFA;
+            --color-surface: #FFFFFF;
+            --color-text-primary: #1D1D1F;
+            --color-text-secondary: #86868B;
+            --color-accent: #007AFF;
+            --color-accent-hover: #0051D5;
+            --color-accent-light: #E5F2FF;
+            --color-divider: #F5F5F7;
+            --color-tattoo: #2C2C2E;
+            --color-tattoo-accent: #FF3B30;
+            
+            --space-sm: 8px;
+            --space-md: 16px;
+            --space-lg: 24px;
+            --space-xl: 32px;
+            --space-2xl: 48px;
+            --space-3xl: 64px;
+            --space-4xl: 96px;
+            --space-5xl: 128px;
+            
+            --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+            --font-body: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--color-bg);
+            color: var(--color-text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Hero */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: var(--space-4xl) var(--space-lg);
+            background: linear-gradient(to bottom, var(--color-bg), var(--color-surface));
+        }
+
+        .hero-overline {
+            font-size: 17px;
+            font-weight: 500;
+            color: var(--color-accent);
+            letter-spacing: 0.5px;
+            margin-bottom: var(--space-md);
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out 0.2s forwards;
+        }
+
+        h1 {
+            font-family: var(--font-display);
+            font-size: clamp(48px, 6vw, 72px);
+            font-weight: 700;
+            line-height: 1.1;
+            letter-spacing: -1px;
+            margin-bottom: var(--space-lg);
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out 0.4s forwards;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(19px, 2vw, 21px);
+            color: var(--color-text-secondary);
+            max-width: 600px;
+            margin: 0 auto var(--space-2xl);
+            line-height: 1.5;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out 0.6s forwards;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn-primary {
+            height: 56px;
+            padding: 0 var(--space-xl);
+            background: var(--color-accent);
+            color: var(--color-surface);
+            border: none;
+            border-radius: 28px;
+            font-size: 17px;
+            font-weight: 500;
+            font-family: var(--font-body);
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(0, 122, 255, 0.24);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out 0.8s forwards;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 122, 255, 0.32);
+        }
+
+        /* Section */
+        .section {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: var(--space-4xl) var(--space-lg);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: var(--space-4xl);
+        }
+
+        .section-overline {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--color-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: var(--space-md);
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: clamp(32px, 4vw, 48px);
+            font-weight: 600;
+            line-height: 1.2;
+            letter-spacing: -0.5px;
+            margin-bottom: var(--space-md);
+        }
+
+        .section-description {
+            font-size: 21px;
+            color: var(--color-text-secondary);
+            max-width: 680px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        /* Video Demo Section */
+        .video-demo-container {
+            background: var(--color-surface);
+            border-radius: 32px;
+            padding: var(--space-4xl) var(--space-2xl);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+            margin: var(--space-4xl) 0;
+        }
+
+        .video-wrapper {
+            max-width: 800px;
+            margin: 0 auto var(--space-2xl);
+            position: relative;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
+        }
+
+        .video-frame {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+        }
+
+        .video-frame iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .video-label {
+            text-align: center;
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin-top: var(--space-lg);
+        }
+
+        .video-meta {
+            text-align: center;
+            font-size: 15px;
+            color: var(--color-text-secondary);
+            margin-top: var(--space-sm);
+        }
+
+        /* AI Transformation */
+        .ai-transform {
+            text-align: center;
+            margin: var(--space-4xl) 0;
+            position: relative;
+        }
+
+        .ai-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-sm);
+            background: linear-gradient(135deg, var(--color-accent), #0051D5);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: var(--space-lg);
+            box-shadow: 0 4px 16px rgba(0, 122, 255, 0.3);
+        }
+
+        .ai-sparkle {
+            font-size: 20px;
+            animation: sparkle 2s ease-in-out infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 0.5; transform: scale(1) rotate(0deg); }
+            50% { opacity: 1; transform: scale(1.2) rotate(180deg); }
+        }
+
+        .transformation-arrow {
+            font-size: 48px;
+            color: var(--color-accent);
+            margin: var(--space-lg) 0;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Social Post Grid */
+        .social-posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-lg);
+            margin-top: var(--space-2xl);
+        }
+
+        .social-post {
+            background: var(--color-surface);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .social-post.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .social-post:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+        }
+
+        /* Mock Social Post Header */
+        .post-platform-header {
+            padding: var(--space-md);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            border-bottom: 1px solid var(--color-divider);
+        }
+
+        .platform-icon-large {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .tiktok-header { background: #000000; }
+        .instagram-header { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
+        .facebook-header { background: #1877F2; }
+        .youtube-header { background: #FF0000; }
+
+        .platform-name {
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .platform-verified {
+            color: var(--color-accent);
+            font-size: 14px;
+        }
+
+        /* Mock Post Image */
+        .post-image {
+            aspect-ratio: 4/5;
+            background: linear-gradient(135deg, #2C2C2E 0%, #1C1C1E 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .post-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 50%, rgba(255, 59, 48, 0.2), transparent 60%);
+        }
+
+        /* Post Content */
+        .post-content {
+            padding: var(--space-md);
+        }
+
+        .post-caption {
+            font-size: 15px;
+            line-height: 1.5;
+            margin-bottom: var(--space-md);
+            color: var(--color-text-primary);
+        }
+
+        .post-hashtags {
+            font-size: 15px;
+            color: var(--color-accent);
+            margin-bottom: var(--space-md);
+            line-height: 1.4;
+        }
+
+        .post-timestamp {
+            font-size: 13px;
+            color: var(--color-text-secondary);
+            margin-bottom: var(--space-sm);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        /* Optimization Badges */
+        .optimization-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-sm);
+            margin-top: var(--space-md);
+        }
+
+        .opt-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .opt-hashtag {
+            background: var(--color-accent-light);
+            color: var(--color-accent);
+        }
+
+        .opt-timing {
+            background: #FFF3CD;
+            color: #856404;
+        }
+
+        .opt-visual {
+            background: #D1ECF1;
+            color: #0C5460;
+        }
+
+        /* Feature Callouts */
+        .feature-callouts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-lg);
+            margin: var(--space-4xl) 0;
+        }
+
+        .callout-card {
+            background: var(--color-surface);
+            border-radius: 20px;
+            padding: var(--space-xl);
+            text-align: center;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+        }
+
+        .callout-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto var(--space-md);
+            background: linear-gradient(135deg, var(--color-accent-light), #F5F5F7);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+
+        .callout-title {
+            font-size: 19px;
+            font-weight: 600;
+            margin-bottom: var(--space-sm);
+        }
+
+        .callout-description {
+            font-size: 15px;
+            color: var(--color-text-secondary);
+            line-height: 1.5;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, var(--color-accent), #0051D5);
+            border-radius: 32px;
+            padding: var(--space-5xl) var(--space-2xl);
+            text-align: center;
+            margin: var(--space-4xl) 0;
+            color: var(--color-surface);
+        }
+
+        .cta-section h2 {
+            font-family: var(--font-display);
+            font-size: clamp(32px, 4vw, 48px);
+            font-weight: 600;
+            line-height: 1.2;
+            margin-bottom: var(--space-md);
+        }
+
+        .cta-section p {
+            font-size: 21px;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto var(--space-xl);
+        }
+
+        .cta-section .btn-primary {
+            background: var(--color-surface);
+            color: var(--color-accent);
+            opacity: 1;
+            animation: none;
+        }
+
+        .cta-section .btn-primary:hover {
+            background: var(--color-bg);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .social-posts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .feature-callouts {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-overline">Ink Sanctum • AI-Powered Content</div>
+        <h1>Your Tattoo Session.<br>A Month of Social Content.</h1>
+        <p class="hero-subtitle">Transform any tattoo video into 10-15 platform-optimized posts with captions, hashtags, and perfect timing—all tailored to the tattoo industry.</p>
+        <a href="sms:+1234567890?&body=I want to see how this works for Ink Sanctum" class="btn-primary">Get Started</a>
+    </section>
+
+    <!-- Video Demo Section -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-overline">Watch The Transformation</div>
+            <h2 class="section-title">From This Video...</h2>
+        </div>
+
+        <div class="video-demo-container">
+            <div class="video-wrapper">
+                <div class="video-frame">
+                    <iframe 
+                        src="https://www.youtube.com/embed/tuWCyQBxHlw?start=209" 
+                        title="Tattoo Session Video" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+            <div class="video-label">Your Raw Tattoo Session</div>
+            <div class="video-meta">One 5-minute video of your work</div>
+
+            <div class="ai-transform">
+                <div class="ai-badge">
+                    <span class="ai-sparkle">✨</span>
+                    <span>AI Analyzes & Optimizes</span>
+                    <span class="ai-sparkle">✨</span>
+                </div>
+                <div class="transformation-arrow">↓</div>
+            </div>
+
+            <h3 style="text-align: center; font-size: 32px; margin-bottom: var(--space-xl); font-weight: 600;">...To These Optimized Posts</h3>
+
+            <!-- Social Posts Grid -->
+            <div class="social-posts-grid">
+                <!-- TikTok Post -->
+                <div class="social-post">
+                    <div class="post-platform-header">
+                        <div class="platform-icon-large tiktok-header">📱</div>
+                        <div>
+                            <div class="platform-name">TikTok</div>
+                            <div style="font-size: 13px; color: var(--color-text-secondary);">@inksanctum</div>
+                        </div>
+                    </div>
+                    <div class="post-image">🎨</div>
+                    <div class="post-content">
+                        <div class="post-timestamp">
+                            ⏱️ Clip: 3:29-3:59 • 📅 Jan 20, 6:00 PM
+                        </div>
+                        <div class="post-caption">
+                            Watch this black & grey realism come to life. The detail work on this portrait took 3 hours, but it's worth every minute when you see the client's reaction. This is what custom tattoo art is all about.
+                        </div>
+                        <div class="post-hashtags">#TattooArtist #BlackAndGrey #Realism #CustomTattoo</div>
+                        <div class="optimization-tags">
+                            <span class="opt-tag opt-hashtag">📊 High-engagement hashtags</span>
+                            <span class="opt-tag opt-timing">⏰ Peak posting time</span>
+                            <span class="opt-tag opt-visual">🎨 Hook: reaction moment</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Instagram Post -->
+                <div class="social-post">
+                    <div class="post-platform-header">
+                        <div class="platform-icon-large instagram-header">📸</div>
+                        <div>
+                            <div class="platform-name">Instagram Reel</div>
+                            <div style="font-size: 13px; color: var(--color-text-secondary);">@inksanctum</div>
+                        </div>
+                    </div>
+                    <div class="post-image">💉</div>
+                    <div class="post-content">
+                        <div class="post-timestamp">
+                            ⏱️ Clip: 3:35-3:50 • 📅 Jan 22, 11:00 AM
+                        </div>
+                        <div class="post-caption">
+                            Close-up of the shading technique that brings depth to every piece. Years of practice, steady hands, and an eye for detail—that's what makes the difference.
+                        </div>
+                        <div class="post-hashtags">#TattooLife #InkArtist #TattooShop #DetailWork #InkSanctum</div>
+                        <div class="optimization-tags">
+                            <span class="opt-tag opt-hashtag">📊 Instagram-optimized tags</span>
+                            <span class="opt-tag opt-timing">⏰ 11am engagement peak</span>
+                            <span class="opt-tag opt-visual">🎨 Visual: technique focus</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Facebook Post -->
+                <div class="social-post">
+                    <div class="post-platform-header">
+                        <div class="platform-icon-large facebook-header">👍</div>
+                        <div>
+                            <div class="platform-name">Facebook</div>
+                            <div style="font-size: 13px; color: var(--color-text-secondary);">Ink Sanctum</div>
+                        </div>
+                    </div>
+                    <div class="post-image">🖤</div>
+                    <div class="post-content">
+                        <div class="post-timestamp">
+                            ⏱️ Clip: 3:29-5:30 • 📅 Jan 23, 10:00 AM
+                        </div>
+                        <div class="post-caption">
+                            Behind the scenes of a 3-hour black & grey realism session. Our client came in with a vision, and we brought it to life with precision and care. Every tattoo tells a story—this one speaks to dedication and artistry. Swipe to see the final result.
+                        </div>
+                        <div class="post-hashtags">#TattooArt #BlackAndGreyTattoo</div>
+                        <div class="optimization-tags">
+                            <span class="opt-tag opt-hashtag">📊 Facebook-friendly hashtags</span>
+                            <span class="opt-tag opt-timing">⏰ 10am weekday optimal</span>
+                            <span class="opt-tag opt-visual">🎨 Storytelling format</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- YouTube Short -->
+                <div class="social-post">
+                    <div class="post-platform-header">
+                        <div class="platform-icon-large youtube-header">▶️</div>
+                        <div>
+                            <div class="platform-name">YouTube Short</div>
+                            <div style="font-size: 13px; color: var(--color-text-secondary);">Ink Sanctum</div>
+                        </div>
+                    </div>
+                    <div class="post-image">✨</div>
+                    <div class="post-content">
+                        <div class="post-timestamp">
+                            ⏱️ Clip: 3:45-4:45 • 📅 Jan 24, 3:00 PM
+                        </div>
+                        <div class="post-caption">
+                            Black & grey realism technique: watch how layers of shading create depth and dimension. This is what 10+ years of experience looks like. Subscribe for more tattoo tutorials and behind-the-scenes content.
+                        </div>
+                        <div class="post-hashtags">#Shorts #TattooTutorial #BlackAndGrey #InkLife</div>
+                        <div class="optimization-tags">
+                            <span class="opt-tag opt-hashtag">📊 #Shorts mandatory</span>
+                            <span class="opt-tag opt-timing">⏰ 3pm high traffic</span>
+                            <span class="opt-tag opt-visual">🎨 Educational angle</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: var(--space-2xl); padding: var(--space-lg); background: var(--color-accent-light); border-radius: 16px;">
+                <div style="font-size: 21px; font-weight: 600; color: var(--color-accent); margin-bottom: var(--space-sm);">+ 9 More Optimized Posts</div>
+                <div style="font-size: 17px; color: var(--color-text-secondary);">Complete 30-day content calendar with captions, hashtags, and timing strategy</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Feature Callouts -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-overline">What Makes It Work</div>
+            <h2 class="section-title">Optimized for Maximum Engagement</h2>
+        </div>
+
+        <div class="feature-callouts">
+            <div class="callout-card">
+                <div class="callout-icon">#️⃣</div>
+                <h3 class="callout-title">Smart Hashtag Strategy</h3>
+                <p class="callout-description">Platform-specific hashtags mixing high-traffic tags (#TattooArtist) with niche community tags (#BlackAndGrey) for maximum reach and relevance.</p>
+            </div>
+
+            <div class="callout-card">
+                <div class="callout-icon">⏰</div>
+                <h3 class="callout-title">Timing Optimization</h3>
+                <p class="callout-description">Posts scheduled for peak engagement times: TikTok at 6-8pm, Instagram at 11am, Facebook mid-morning, YouTube afternoons—when your audience is most active.</p>
+            </div>
+
+            <div class="callout-card">
+                <div class="callout-icon">🎨</div>
+                <h3 class="callout-title">Social Art Design</h3>
+                <p class="callout-description">Each post styled to match platform aesthetics—from TikTok's authentic vibe to Instagram's polished look. Your content looks native, not automated.</p>
+            </div>
+
+            <div class="callout-card">
+                <div class="callout-icon">✂️</div>
+                <h3 class="callout-title">Strategic Repurposing</h3>
+                <p class="callout-description">One session becomes: TikTok hooks (reactions), Instagram process shots, Facebook storytelling, YouTube tutorials—each clip optimized for its platform.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section">
+        <div class="cta-section">
+            <h2>Ready to Transform<br>Your Tattoo Content?</h2>
+            <p>From session footage to a month of strategic social presence—optimized for engagement, timing, and platform best practices.</p>
+            <a href="sms:+1234567890?&body=I want to learn more about Ink Sanctum's AI content solution" class="btn-primary">Text Me to Get Started</a>
+            <p style="font-size: 15px; margin-top: var(--space-lg); opacity: 0.8;">Beta pricing: $1,000/month vs. $2,000-5,000 for traditional social media management</p>
+        </div>
+    </section>
+
+    <script>
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all social posts
+        document.querySelectorAll('.social-post').forEach((el, index) => {
+            el.style.transitionDelay = `${index * 0.15}s`;
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
